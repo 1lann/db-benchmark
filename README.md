@@ -1,5 +1,5 @@
 # DB Benchmark
-DB Benchmark is a benchmarking framework to benchmark database performance with Go.
+DB Benchmark is a framework to benchmark database performance with Go.
 
 ## Notices
 I've made my best effort to write queries as idiomatically and realistically as possible. If you feel like that are issues with the queries used please don't hesitate to post a issue or pull request.
