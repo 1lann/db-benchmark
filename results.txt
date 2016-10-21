@@ -1,0 +1,118 @@
+Benchmark taken on a 15-inch Mid 2014 Retina MacBook Pro
+Disk: SM0512F 500GB SSD
+RAM: 16GB 1600MHz DDR3
+CPU: 2.5GHz Intel Core i7
+
+Here are some things to take note of with these database configurations:
+- MySQL is running with default settings out of the box.
+- RethinkDB is running with default settings out of the box.
+- RethinkDB writes queries are performed with soft durability.
+- 80 connections are used in the connection pools for both databases.
+
+Disclaimer:
+I am in no way qualified to benchmark databases and draw conclusions from these results. This was really just an experiment and for fun. Please make your own judgements before deciding on the database appropriate for you, performance isn't everything. Remember that this benchmark does not take into account of different features, consistency, scalability and durability.
+
+Summary:
+- mysql is equivalent to rethinkdb for sequential reads
+- mysql is 4x faster than rethinkdb for parallel reads
+- mysql is about 1.6x faster than rethinkdb for soft durability sequential writes (edited)
+- mysql is about 3.6x faster than rethinkdb for soft durability parallel writes
+- mysql is about 20x faster than rethinkdb for scanning the whole table
+- in-memory maps are about 150x faster than mysql
+
+Some messages have been removed below to make comparing numbers easier.
+
+--- Starting benchmark for rethinkdb ---
+
+Write benchmark pass 1
+Took 4.6340667710000005 seconds
+Took 4.3975196069999996 seconds
+
+Write benchmark pass 2
+Took 4.6335570839999995 seconds
+Took 4.331006432 seconds
+
+Write benchmark pass 3
+Took 4.365251626 seconds
+Took 4.29342182 seconds
+
+End of writes benchmark
+
+Read benchmark pass 1
+Took 2.021726522 seconds
+Took 2.058026293 seconds
+Took 0.20991673100000002 seconds
+
+Read benchmark pass 2
+Took 1.9565114810000002 seconds
+Took 2.101281381 seconds
+Took 0.21649236800000002 seconds
+
+Read benchmark pass 3
+Took 1.964601389 seconds
+Took 2.121900399 seconds
+Took 0.21743034200000003 seconds
+
+--- Starting benchmark for mysql ---
+
+Write benchmark pass 1
+Took 1.585137906 seconds
+Took 0.8672601750000001 seconds
+
+Write benchmark pass 2
+Took 2.887671143 seconds
+Took 1.451573489 seconds
+
+Write benchmark pass 3
+Took 2.9074582060000003 seconds
+Took 1.081117475 seconds
+
+End of writes benchmark
+
+Read benchmark pass 1
+Took 1.883455096 seconds
+Took 0.49095268400000003 seconds
+Took 0.011492753000000001 seconds
+
+Read benchmark pass 2
+Took 1.9072288290000001 seconds
+Took 0.46567795100000003 seconds
+Took 0.010504537000000001 seconds
+
+Read benchmark pass 3
+Took 1.831006147 seconds
+Took 0.46656734600000005 seconds
+Took 0.015543143 seconds
+
+--- Starting benchmark for memory ---
+
+Write benchmark pass 1
+Took 0.002242843 seconds
+Took 0.008204437 seconds
+
+Write benchmark pass 2
+Took 0.002025544 seconds
+Took 0.008807552 seconds
+
+Write benchmark pass 3
+Took 0.005228649 seconds
+Took 0.009470998000000001 seconds
+
+End of writes benchmark
+
+Read benchmark pass 1
+Took 0.0007702620000000001 seconds
+Took 0.003180421 seconds
+Took 0.000534059 seconds
+
+Read benchmark pass 2
+Took 0.0007119310000000001 seconds
+Took 0.003082225 seconds
+Took 0.000624903 seconds
+
+Read benchmark pass 3
+Took 0.000709389 seconds
+Took 0.0033370970000000002 seconds
+Took 0.0007055210000000001 seconds
+
+--- All benchmarks complete ---
