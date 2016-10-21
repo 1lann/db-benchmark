@@ -11,6 +11,8 @@ Here are some things to take note of with these database configurations:
 - 80 connections are used in the connection pools for both databases.
 
 ## Disclaimer
+Note that purely the drivers of each database would have a significant effect on the results, as the difference between MySQL and RethinkDB are fractions of milliseconds per query. This benchmark is could be more reflective of Go driver performance rather than actual database performance.
+
 I am in no way qualified to benchmark databases and draw conclusions from these results. This was really just an experiment and for fun. Please make your own judgements before deciding on the database appropriate for you, performance isn't everything. Remember that this benchmark does not take into account of different features, consistency, scalability and durability.
 
 ## Results
