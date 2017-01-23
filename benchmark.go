@@ -69,8 +69,6 @@ func main() {
 		w := benchmark.Wrappers[db]
 		time.Sleep(time.Second * 5)
 		w.Connect(opts)
-		fmt.Println("Connected")
-		time.Sleep(time.Minute)
 		fmt.Println("\n--- Starting benchmark for", db, "---")
 		// for i := 1; i <= 3; i++ {
 		// 	fmt.Println("\nWrite benchmark pass", i)
