@@ -9,6 +9,9 @@ import (
 	"time"
 
 	"github.com/1lann/db-benchmark/benchmark"
+	_ "github.com/1lann/db-benchmark/bolt"
+	_ "github.com/1lann/db-benchmark/buntdb"
+	_ "github.com/1lann/db-benchmark/leveldb"
 	_ "github.com/1lann/db-benchmark/memory"
 	_ "github.com/1lann/db-benchmark/mysql"
 	_ "github.com/1lann/db-benchmark/rethinkdb"
@@ -18,24 +21,34 @@ var documents []benchmark.Document
 var documentMap = make(map[string]int)
 
 var connectOpts = map[string]benchmark.ConnectOpts{
-	"rethinkdb": {
-		DB:       "test",
-		Table:    "benchmark",
-		Username: "admin",
-		Host:     "127.0.0.1:28015",
-	},
-	"mysql": {
-		DB:       "test",
-		Table:    "benchmark",
-		Username: "root",
-	},
+	// "rethinkdb": {
+	// 	DB:       "test",
+	// 	Table:    "benchmark",
+	// 	Username: "admin",
+	// 	Host:     "127.0.0.1:28015",
+	// },
+	// "mysql": {
+	// 	DB:       "test",
+	// 	Table:    "benchmark",
+	// 	Username: "root",
+	// },
 	"memory": {},
+	"leveldb": {
+		DB: "leveldb.db",
+	},
+	// "buntdb": {
+	// 	DB: "buntdb.db",
+	// },
+	"bolt": {
+		DB:    "bolt.db",
+		Table: "benchmark",
+	},
 }
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
+	rand.Seed(0)
 
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 100000; i++ {
 		randomData := make([]byte, 400)
 		_, err := rand.Read(randomData)
 		if err != nil {
@@ -54,12 +67,15 @@ func main() {
 
 	for db, opts := range connectOpts {
 		w := benchmark.Wrappers[db]
+		time.Sleep(time.Second * 5)
 		w.Connect(opts)
+		fmt.Println("Connected")
+		time.Sleep(time.Minute)
 		fmt.Println("\n--- Starting benchmark for", db, "---")
-		for i := 1; i <= 3; i++ {
-			fmt.Println("\nWrite benchmark pass", i)
-			runWrites(w)
-		}
+		// for i := 1; i <= 3; i++ {
+		// 	fmt.Println("\nWrite benchmark pass", i)
+		// 	runWrites(w)
+		// }
 		fmt.Println("\nEnd of writes benchmark")
 		for i := 1; i <= 3; i++ {
 			fmt.Println("\nRead benchmark pass", i)
@@ -80,7 +96,7 @@ func runWrites(w benchmark.Wrapper) {
 	fmt.Println("Took", time.Now().Sub(start).Seconds(), "seconds")
 	w.Clear()
 
-	fmt.Println("Putting", len(documents), "documents simutaneously...")
+	fmt.Println("Putting", len(documents), "documents simultaneously...")
 	wg := new(sync.WaitGroup)
 	wg.Add(len(documents))
 
@@ -107,7 +123,7 @@ func runReads(w benchmark.Wrapper) {
 	}
 	fmt.Println("Took", time.Now().Sub(start).Seconds(), "seconds")
 
-	fmt.Println("Getting", len(documents), "documents simutaneously...")
+	fmt.Println("Getting", len(documents), "documents simultaneously...")
 	wg := new(sync.WaitGroup)
 	wg.Add(len(documents))
 
