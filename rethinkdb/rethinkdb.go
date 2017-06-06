@@ -24,8 +24,8 @@ func (w *Wrapper) Connect(opts benchmark.ConnectOpts) {
 		Database:   opts.DB,
 		Username:   opts.Username,
 		Password:   opts.Password,
-		InitialCap: 80,
-		MaxOpen:    80,
+		InitialCap: 1000,
+		MaxOpen:    1000,
 	})
 	if err != nil {
 		panic(err)

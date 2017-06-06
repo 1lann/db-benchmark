@@ -14,6 +14,7 @@ import (
 	_ "github.com/1lann/db-benchmark/leveldb"
 	_ "github.com/1lann/db-benchmark/memory"
 	_ "github.com/1lann/db-benchmark/mysql"
+	_ "github.com/1lann/db-benchmark/postgres"
 	_ "github.com/1lann/db-benchmark/rethinkdb"
 )
 
@@ -21,24 +22,31 @@ var documents []benchmark.Document
 var documentMap = make(map[string]int)
 
 var connectOpts = map[string]benchmark.ConnectOpts{
-	// "rethinkdb": {
-	// 	DB:       "test",
-	// 	Table:    "benchmark",
-	// 	Username: "admin",
-	// 	Host:     "127.0.0.1:28015",
-	// },
-	// "mysql": {
-	// 	DB:       "test",
-	// 	Table:    "benchmark",
-	// 	Username: "root",
-	// },
+	"rethinkdb": {
+		DB:       "test",
+		Table:    "benchmark",
+		Username: "admin",
+		Password: "password",
+		Host:     "127.0.0.1:28015",
+	},
+	"mysql": {
+		DB:       "test",
+		Table:    "benchmark",
+		Username: "root",
+	},
+	"postgres": {
+		DB:       "test",
+		Table:    "benchmark",
+		Username: "root",
+		Host:     "localhost:26257",
+	},
 	"memory": {},
 	"leveldb": {
 		DB: "leveldb.db",
 	},
-	// "buntdb": {
-	// 	DB: "buntdb.db",
-	// },
+	"buntdb": {
+		DB: "buntdb.db",
+	},
 	"bolt": {
 		DB:    "bolt.db",
 		Table: "benchmark",
@@ -48,7 +56,7 @@ var connectOpts = map[string]benchmark.ConnectOpts{
 func main() {
 	rand.Seed(0)
 
-	for i := 0; i < 100000; i++ {
+	for i := 0; i < 10000; i++ {
 		randomData := make([]byte, 400)
 		_, err := rand.Read(randomData)
 		if err != nil {
