@@ -11,6 +11,7 @@ import (
 	_ "github.com/1lann/db-benchmark/badger"
 	"github.com/1lann/db-benchmark/benchmark"
 	_ "github.com/1lann/db-benchmark/bolt"
+	_ "github.com/1lann/db-benchmark/bolthold"
 	_ "github.com/1lann/db-benchmark/buntdb"
 	_ "github.com/1lann/db-benchmark/cete"
 	_ "github.com/1lann/db-benchmark/leveldb"
@@ -18,6 +19,7 @@ import (
 	_ "github.com/1lann/db-benchmark/mysql"
 	_ "github.com/1lann/db-benchmark/postgres"
 	_ "github.com/1lann/db-benchmark/rethinkdb"
+	_ "github.com/1lann/db-benchmark/storm"
 )
 
 var documents []benchmark.Document
@@ -52,10 +54,16 @@ var connectOpts = map[string]benchmark.ConnectOpts{
 	// "buntdb": {
 	// 	DB: "buntdb.db",
 	// },
-	"bolt": {
-		DB:    "bolt.db",
-		Table: "benchmark",
+	// "bolt": {
+	// 	DB:    "bolt.db",
+	// 	Table: "benchmark",
+	// },
+	"storm": {
+		DB: "storm.db",
 	},
+	// "bolthold": {
+	// 	DB: "bolthold.db",
+	// },
 	"cete": {
 		DB: "./cetedata",
 	},

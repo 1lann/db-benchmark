@@ -17,7 +17,7 @@ func init() {
 
 func (w *Wrapper) Connect(opts benchmark.ConnectOpts) {
 	var err error
-	w.db, err = cete.OpenDatabase(opts.DB)
+	w.db, err = cete.Open(opts.DB)
 	if err != nil {
 		panic(err)
 	}
