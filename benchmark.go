@@ -8,9 +8,11 @@ import (
 	"sync"
 	"time"
 
+	_ "github.com/1lann/db-benchmark/badger"
 	"github.com/1lann/db-benchmark/benchmark"
 	_ "github.com/1lann/db-benchmark/bolt"
 	_ "github.com/1lann/db-benchmark/buntdb"
+	_ "github.com/1lann/db-benchmark/cete"
 	_ "github.com/1lann/db-benchmark/leveldb"
 	_ "github.com/1lann/db-benchmark/memory"
 	_ "github.com/1lann/db-benchmark/mysql"
@@ -22,41 +24,47 @@ var documents []benchmark.Document
 var documentMap = make(map[string]int)
 
 var connectOpts = map[string]benchmark.ConnectOpts{
-	"rethinkdb": {
-		DB:       "test",
-		Table:    "benchmark",
-		Username: "admin",
-		Password: "password",
-		Host:     "127.0.0.1:28015",
-	},
-	"mysql": {
-		DB:       "test",
-		Table:    "benchmark",
-		Username: "root",
-	},
-	"postgres": {
-		DB:       "test",
-		Table:    "benchmark",
-		Username: "root",
-		Host:     "localhost:26257",
-	},
-	"memory": {},
-	"leveldb": {
-		DB: "leveldb.db",
-	},
-	"buntdb": {
-		DB: "buntdb.db",
-	},
+	// "rethinkdb": {
+	// 	DB:       "test",
+	// 	Table:    "benchmark",
+	// 	Username: "admin",
+	// 	Password: "password",
+	// 	Host:     "127.0.0.1:28015",
+	// },
+	// "mysql": {
+	// 	DB:       "test",
+	// 	Table:    "benchmark",
+	// 	Username: "root",
+	// },
+	// "postgres": {
+	// 	DB:       "test",
+	// 	Table:    "benchmark",
+	// 	Username: "root",
+	// 	Host:     "localhost:26257",
+	// },
+	// "memory": {},
+	// "leveldb": {
+	// 	DB: "leveldb.db",
+	// },
+	// "badger": {
+	// 	DB: "./badgerdata",
+	// },
+	// "buntdb": {
+	// 	DB: "buntdb.db",
+	// },
 	"bolt": {
 		DB:    "bolt.db",
 		Table: "benchmark",
+	},
+	"cete": {
+		DB: "./cetedata",
 	},
 }
 
 func main() {
 	rand.Seed(0)
 
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 100000; i++ {
 		randomData := make([]byte, 400)
 		_, err := rand.Read(randomData)
 		if err != nil {
@@ -93,19 +101,19 @@ func main() {
 
 func runWrites(w benchmark.Wrapper) {
 	w.Clear()
-	fmt.Println("Putting", len(documents), "documents sequentially...")
-	start := time.Now()
-	for _, doc := range documents {
-		w.Put(doc)
-	}
-	fmt.Println("Took", time.Now().Sub(start).Seconds(), "seconds")
-	w.Clear()
+	// fmt.Println("Putting", len(documents), "documents sequentially...")
+	// start := time.Now()
+	// for _, doc := range documents {
+	// 	w.Put(doc)
+	// }
+	// fmt.Println("Took", time.Now().Sub(start).Seconds(), "seconds")
+	// w.Clear()
 
 	fmt.Println("Putting", len(documents), "documents simultaneously...")
 	wg := new(sync.WaitGroup)
 	wg.Add(len(documents))
 
-	start = time.Now()
+	start := time.Now()
 	for _, doc := range documents {
 		go func(idoc benchmark.Document) {
 			w.Put(idoc)
@@ -152,7 +160,11 @@ func runReads(w benchmark.Wrapper) {
 	fmt.Println("Took", time.Now().Sub(start).Seconds(), "seconds")
 
 	for _, allDoc := range all {
-		doc := documents[documentMap[allDoc.ID]]
+		index, found := documentMap[allDoc.ID]
+		if !found {
+			panic("benchmark error: non-existent document was returned")
+		}
+		doc := documents[index]
 		if allDoc.ID != doc.ID || allDoc.Value != doc.Value {
 			panic("benchmark error: document integrity error")
 		}
